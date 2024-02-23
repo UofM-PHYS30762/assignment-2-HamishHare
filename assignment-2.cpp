@@ -11,14 +11,13 @@
 #include<fstream>
 #include<math.h>
 #include<limits>
-
 #include<vector>
 #include<string>
-using std::string; using std::vector;
 #include<tuple>
 #include<numeric>
 #include<algorithm>
 #include<sstream>
+using std::string; using std::vector;
 
 // Constants
 typedef std::tuple<double, int, string> course_tuple;
@@ -102,16 +101,8 @@ vector<course_tuple> filter_course_info(vector<course_tuple>& course_info,
                                         int year)
 {
   vector<course_tuple> filtered_info;
-  // apply a filter that selects elements where the first digit of the 5
+  // Apply a filter that selects elements where the first digit of the 5
   // digit course code is equal to the given year
-  // int course_code;
-  // vector<course_tuple>::iterator course_entry;
-  // for(course_entry=course_info.begin(); course_entry<course_info.end();
-  //     ++course_entry)
-  // {
-  //   course_code = std::get<1>(*course_entry);
-  //   if(course_code/10000 == year) filtered_info.push_back(*course_entry);
-  // }
   copy_if(course_info.begin(), course_info.end(), std::back_inserter(filtered_info),
           [year](course_tuple& info){return std::get<1>(info)/10000 == year;});
   return filtered_info;
@@ -163,7 +154,7 @@ string get_valid_selection()
   {
     getline(std::cin, user_input);
     if(!(user_input == "1" || user_input == "2" || user_input == "3"
-         || user_input == "all"))
+         || user_input == "4" || user_input == "all"))
     {
       std::cout<<"Please enter one of the allowed choices (1, 2, 3, 4 or all): ";
     }
@@ -218,22 +209,35 @@ double compute_error_on_mean(double standard_deviation, size_t num_elements)
   else return standard_deviation/std::pow(num_elements, 0.5);
 }
 
+// .. Print out the statistics for the selected courses
+int print_statistics(double mean, double standard_deviation,
+                     double error_on_mean)
+{
+  std::cout.setf(std::ios::fixed, std::ios::floatfield);
+  std::cout<<std::setprecision(1);
+  std::cout<<"Mean grade of selection: "<<mean<<std::endl;
+  std::cout<<"Standard deviation: "<<standard_deviation<<std::endl;
+  std::cout<<"Standard error on mean: "<<error_on_mean<<std::endl;
+  std::cout<<"======================================="<<std::endl;
+  return 0;
+}
+
 // Main function
 int main()
 {
   // Get filename from user
-  string data_file_name;
-  //string data_file_name{"courselist.dat"};
-  std::cout<<"Enter data filename: ";
+  // alstring data_file_name;
+  string data_file_name{"courselist.dat"};
+  // std::cout<<"Enter data filename: ";
   // TODO: Validation
-  std::getline(std::cin, data_file_name);
+  // std::getline(std::cin, data_file_name);
 
   // Open file (you must check if successful)
   //std::ifstream course_stream(data_file);
 
   // Read in all the lines from the file
   vector<string> all_file_lines = read_lines_from_file(data_file_name);
-  size_t num_courses{all_file_lines.size()};
+  size_t num_courses_total{all_file_lines.size()};
 
   // Split each line into grade, course code, and course title
   vector<course_tuple> all_course_details = get_course_info(all_file_lines);
@@ -254,17 +258,26 @@ int main()
                                                  std::stoi(year_selection));
   }
 
+  // Sort the course list appropriately
+  // TODO
+
   // Print out list of all courses (correctly formatted)
   print_formatted_course_list(filtered_course_details);
 
   // Print number of courses requested
+  size_t num_courses_filtered{filtered_course_details.size()};
+  std::cout<<"Number of courses selected: "<<num_courses_filtered
+           <<"/"<<num_courses_total<<std::endl;
 
   // Compute mean, standard deviation and standard error of mean
   // vector<double> test{1.0, 2.0, 3.0, 4.0};
-  vector<double> all_grades = extract_grades(all_course_details);
-  double mean{compute_mean(all_grades)};
-  double standard_deviation{compute_standard_deviation(all_grades)};
-  double error_on_mean = compute_error_on_mean(standard_deviation, all_grades.size());
+  vector<double> filtered_grades = extract_grades(filtered_course_details);
+  double mean{compute_mean(filtered_grades)};
+  double standard_deviation{compute_standard_deviation(filtered_grades)};
+  double error_on_mean = compute_error_on_mean(standard_deviation, num_courses_filtered);
+
+  // Print out the statistics
+  print_statistics(mean, standard_deviation, error_on_mean);
 
   // Free memory
 
