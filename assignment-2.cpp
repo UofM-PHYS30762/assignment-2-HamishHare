@@ -69,8 +69,37 @@ std::vector<course_tuple> get_course_info(std::vector<string> &all_lines)
   return all_courses_info;
 }
 
+// .. Extract a vector of grades only from the vector of tuples
+//    containing the full course info
+//   (I am doing this to meet the marking criteria, which asks
+//    for "Functions to calculate the mean and standard deviation
+//    of an array and/or vector of real numbers", so rather than
+//    just passing the vector of tuples and extracting the grade
+//    I am extracting them here so that only the array of numbers
+//    is passed in to the mean and std functions.)
+std::vector<double> extract_grades(std::vector<course_tuple>& course_info)
+{
+  // TODO:
+  // - Validation? Maybe check for empty vector first?
+  std::vector<double> all_grades;
+  // Iterate over all course entries to extract the grade
+  double grade;
+  std::vector<course_tuple>::iterator course_entry;
+  for(course_entry=course_info.begin(); course_entry<course_info.end();
+      ++course_entry)
+  {
+    grade = std::get<0>(*course_entry);
+    all_grades.push_back(grade);
+  }
+  return all_grades;
+}
+
 // .. Compute the mean and standard deviation of given scores.
 // TODO
+// double compute_mean()
+// {
+  
+// }
 
 // Main function
 int main()
@@ -90,10 +119,15 @@ int main()
   size_t num_courses{all_file_lines.size()};
 
   // Split each line into grade, course code, and course title
-  std::vector<course_tuple> course_details = get_course_info(all_file_lines);
+  std::vector<course_tuple> all_course_details = get_course_info(all_file_lines);
 
   // Close file
   //course_stream.close();
+
+  // Print out list of all courses (correctly formatted)
+
+  // TEST: Extract all grades
+  std::vector<double> all_grades = extract_grades(all_course_details);
 
   // Print number of courses requested
 
