@@ -162,8 +162,75 @@ string get_valid_selection()
   }while(!valid);
 
   // Return the output
-  std::cout<<"You entered "<<user_input<<std::endl;
+  std::cout<<"You entered '"<<user_input<<"'"<<std::endl;
   return user_input;
+}
+
+// .. Get the user to choose how to sort the data
+string get_valid_sort_choice()
+{
+  string user_input;
+  bool valid{false};
+  std::cout<<"How would you like to sort the courses? (by 'code' or 'title'): ";
+  // Prompt the user for input until a valid choice is given
+  do
+  {
+    getline(std::cin, user_input);
+    if(!(user_input == "code" || user_input == "title"))
+    {
+      std::cout<<"Please enter one of the allowed choices (code or title): ";
+    }
+    else valid = true;
+  }while(!valid);
+
+  // Return the output
+  std::cout<<"You entered '"<<user_input<<"'"<<std::endl;
+  return user_input;
+}
+
+// .. Sort data according to given sort choice
+//   (Note: this will directly change the vector it is acting on)
+// int sort_course_info(std::vector<course_tuple>& course_info, string sort_mode)
+// {
+//     if(sort_mode == "code") const size_t sort_index{1};
+//     else const size_t sort_index{2};
+
+//     // Create a condition to compare the correct index when sorting
+//     auto compare_by_index = [sort_index](const course_tuple& first, const course_tuple& second) -> bool {
+//         return std::get<sort_index>(first) < std::get<sort_index>(second);
+//     };
+
+//     // Sort the vector of tuples using the condition above
+//     std::sort(course_info.begin(), course_info.end(), compare_by_index);
+//     return 0;
+// }
+int sort_course_info_code(std::vector<course_tuple>& course_info)
+{
+    const size_t sort_index{1};
+
+    // Create a condition to compare the correct index when sorting
+    auto compare_by_index = [sort_index](const course_tuple& first,
+                            const course_tuple& second) -> bool {
+        return std::get<sort_index>(first) < std::get<sort_index>(second);
+    };
+
+    // Sort the vector of tuples using the condition above
+    std::sort(course_info.begin(), course_info.end(), compare_by_index);
+    return 0;
+}
+int sort_course_info_title(std::vector<course_tuple>& course_info)
+{
+    const size_t sort_index{2};
+
+    // Create a condition to compare the correct index when sorting
+    auto compare_by_index = [sort_index](const course_tuple& first,
+                            const course_tuple& second) -> bool {
+        return std::get<sort_index>(first) < std::get<sort_index>(second);
+    };
+
+    // Sort the vector of tuples using the condition above
+    std::sort(course_info.begin(), course_info.end(), compare_by_index);
+    return 0;
 }
 
 // .. Compute the mean of given scores
@@ -246,7 +313,7 @@ int main()
   //course_stream.close();
 
   // Get the course selection, filtered either by year or 'all'
-  string year_selection = get_valid_selection();
+  string year_selection{get_valid_selection()};
   vector<course_tuple> filtered_course_details;
   if (year_selection=="all")
   {
@@ -260,6 +327,9 @@ int main()
 
   // Sort the course list appropriately
   // TODO
+  string sort_choice{get_valid_sort_choice()};
+  if(sort_choice == "code") sort_course_info_code(filtered_course_details);
+  else sort_course_info_title(filtered_course_details);
 
   // Print out list of all courses (correctly formatted)
   print_formatted_course_list(filtered_course_details);
