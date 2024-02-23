@@ -95,7 +95,7 @@ vector<double> extract_grades(vector<course_tuple>& course_info)
   return all_grades;
 }
 
-// .. Compute the mean of given scores.
+// .. Compute the mean of given scores
 double compute_mean(vector<double>& grades)
 {
   // TODO: Validation?
@@ -107,6 +107,7 @@ double compute_mean(vector<double>& grades)
     return mean;
   }
 }
+
 // .. Compute the standard deviation of given scores
 double compute_standard_deviation(vector<double>& grades)
 {
@@ -127,6 +128,14 @@ double compute_standard_deviation(vector<double>& grades)
     double standard_deviation = std::pow(sqrt_term, 0.5);
     return standard_deviation;
   }
+}
+
+// .. Compute the standard error on the mean
+double compute_error_on_mean(double standard_deviation, size_t num_elements)
+{
+  // TODO: Validation?
+  if(num_elements==0) return 0;
+  else return standard_deviation/std::pow(num_elements, 0.5);
 }
 
 // Main function
@@ -158,10 +167,11 @@ int main()
 
   // Compute mean, standard deviation and standard error of mean
   // TEST: Extract all grades and find mean
-  vector<double> all_grades = extract_grades(all_course_details);
-  // double mean{compute_mean(all_grades)};
   vector<double> test{1.0, 2.0, 3.0, 4.0};
+  // vector<double> all_grades = extract_grades(all_course_details);
+  // double mean{compute_mean(all_grades)};
   double standard_deviation{compute_standard_deviation(test)};
+  double error_on_mean = compute_error_on_mean(standard_deviation, test.size());
 
   // Free memory
 
