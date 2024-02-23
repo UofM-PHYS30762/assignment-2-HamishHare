@@ -45,7 +45,7 @@ vector<string> read_lines_from_file(string file_name)
   return all_lines;
 }
 
-// Split each course entry into component parts
+// .. Split each course entry into component parts
 vector<course_tuple> get_course_info(vector<string> &all_lines)
 {
   vector<course_tuple> all_courses_info;
@@ -93,6 +93,40 @@ vector<double> extract_grades(vector<course_tuple>& course_info)
     all_grades.push_back(grade);
   }
   return all_grades;
+}
+
+// .. Print out a (formatted) list of given courses
+int print_formatted_course_list(vector<course_tuple>& course_info)
+{
+  if (course_info.size()==0) return 0;
+  else
+  {
+    std::ostringstream course_name_stream;
+    string course_name;
+
+    std::cout<<"======================================="<<std::endl;
+    std::cout<<"                COURSES"<<std::endl;
+    std::cout<<"======================================="<<std::endl;
+
+    // Iterate over all courses
+    int course_code{0};
+    string course_title;
+    vector<course_tuple>::iterator course_entry;
+    for(course_entry=course_info.begin(); course_entry<course_info.end();
+        ++course_entry)
+    {
+      // Create the full course name
+      course_code = std::get<1>(*course_entry);
+      course_title = std::get<2>(*course_entry);
+      course_name_stream<<"PHYS "<<course_code<<" "<<course_title<<std::endl;
+      course_name = course_name_stream.str();
+      course_name_stream.str(""); // clear stream
+      // Output the name
+      std::cout<<course_name;
+    }
+    std::cout<<"======================================="<<std::endl;
+    return 1;
+  }
 }
 
 // .. Compute the mean of given scores
@@ -162,16 +196,16 @@ int main()
   //course_stream.close();
 
   // Print out list of all courses (correctly formatted)
+  print_formatted_course_list(all_course_details);
 
   // Print number of courses requested
 
   // Compute mean, standard deviation and standard error of mean
-  // TEST: Extract all grades and find mean
-  vector<double> test{1.0, 2.0, 3.0, 4.0};
-  // vector<double> all_grades = extract_grades(all_course_details);
-  // double mean{compute_mean(all_grades)};
-  double standard_deviation{compute_standard_deviation(test)};
-  double error_on_mean = compute_error_on_mean(standard_deviation, test.size());
+  // vector<double> test{1.0, 2.0, 3.0, 4.0};
+  vector<double> all_grades = extract_grades(all_course_details);
+  double mean{compute_mean(all_grades)};
+  double standard_deviation{compute_standard_deviation(all_grades)};
+  double error_on_mean = compute_error_on_mean(standard_deviation, all_grades.size());
 
   // Free memory
 
