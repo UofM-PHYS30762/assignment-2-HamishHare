@@ -27,8 +27,6 @@ typedef std::tuple<double, int, string> course_tuple;
 vector<string> read_lines_from_file(string file_name)
 {
   // Open file
-  // (Maybe open the file elsewhere and just pass the filestream by
-  //  reference into this function, rather than the file name)
   std::ifstream course_stream(file_name);
   // TODO: Validation!
   // .. check for empty files
@@ -190,20 +188,8 @@ string get_valid_sort_choice()
 
 // .. Sort data according to given sort choice
 //   (Note: this will directly change the vector it is acting on)
-// int sort_course_info(std::vector<course_tuple>& course_info, string sort_mode)
-// {
-//     if(sort_mode == "code") const size_t sort_index{1};
-//     else const size_t sort_index{2};
-
-//     // Create a condition to compare the correct index when sorting
-//     auto compare_by_index = [sort_index](const course_tuple& first, const course_tuple& second) -> bool {
-//         return std::get<sort_index>(first) < std::get<sort_index>(second);
-//     };
-
-//     // Sort the vector of tuples using the condition above
-//     std::sort(course_info.begin(), course_info.end(), compare_by_index);
-//     return 0;
-// }
+//   (Sadly I could not reconcile these two functions into one as
+//    as I would get compile errors when sort_index is not const)
 int sort_course_info_code(std::vector<course_tuple>& course_info)
 {
     const size_t sort_index{1};
@@ -236,7 +222,6 @@ int sort_course_info_title(std::vector<course_tuple>& course_info)
 // .. Compute the mean of given scores
 double compute_mean(vector<double>& grades)
 {
-  // TODO: Validation?
   if(grades.size()==0) return 0;
   else
   {
@@ -249,7 +234,6 @@ double compute_mean(vector<double>& grades)
 // .. Compute the standard deviation of given scores
 double compute_standard_deviation(vector<double>& grades)
 {
-  // TODO: Validation?
   if(grades.size()==0) return 0;
   else
   {
@@ -271,7 +255,6 @@ double compute_standard_deviation(vector<double>& grades)
 // .. Compute the standard error on the mean
 double compute_error_on_mean(double standard_deviation, size_t num_elements)
 {
-  // TODO: Validation?
   if(num_elements==0) return 0;
   else return standard_deviation/std::pow(num_elements, 0.5);
 }
@@ -292,15 +275,8 @@ int print_statistics(double mean, double standard_deviation,
 // Main function
 int main()
 {
-  // Get filename from user
-  // alstring data_file_name;
+  // File name
   string data_file_name{"courselist.dat"};
-  // std::cout<<"Enter data filename: ";
-  // TODO: Validation
-  // std::getline(std::cin, data_file_name);
-
-  // Open file (you must check if successful)
-  //std::ifstream course_stream(data_file);
 
   // Read in all the lines from the file
   vector<string> all_file_lines = read_lines_from_file(data_file_name);
@@ -308,9 +284,6 @@ int main()
 
   // Split each line into grade, course code, and course title
   vector<course_tuple> all_course_details = get_course_info(all_file_lines);
-
-  // Close file
-  //course_stream.close();
 
   // Get the course selection, filtered either by year or 'all'
   string year_selection{get_valid_selection()};
@@ -326,10 +299,9 @@ int main()
   }
 
   // Sort the course list appropriately
-  // TODO
   string sort_choice{get_valid_sort_choice()};
-  if(sort_choice == "code") sort_course_info_code(filtered_course_details);
-  else sort_course_info_title(filtered_course_details);
+if(sort_choice == "code") sort_course_info_code(filtered_course_details);
+else sort_course_info_title(filtered_course_details);
 
   // Print out list of all courses (correctly formatted)
   print_formatted_course_list(filtered_course_details);
@@ -340,7 +312,6 @@ int main()
            <<"/"<<num_courses_total<<std::endl;
 
   // Compute mean, standard deviation and standard error of mean
-  // vector<double> test{1.0, 2.0, 3.0, 4.0};
   vector<double> filtered_grades = extract_grades(filtered_course_details);
   double mean{compute_mean(filtered_grades)};
   double standard_deviation{compute_standard_deviation(filtered_grades)};
@@ -348,8 +319,6 @@ int main()
 
   // Print out the statistics
   print_statistics(mean, standard_deviation, error_on_mean);
-
-  // Free memory
 
   return 0;
 }
