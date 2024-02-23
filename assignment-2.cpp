@@ -9,14 +9,16 @@
 #include<iostream>
 #include<iomanip>
 #include<fstream>
-//#include<cmath>
 #include<math.h>
+#include<limits>
 
 #include<vector>
 #include<string>
 using std::string; using std::vector;
+#include<tuple>
 #include<numeric>
-//#include<sstream>
+#include<algorithm>
+#include<sstream>
 
 // Constants
 typedef std::tuple<double, int, string> course_tuple;
@@ -95,10 +97,31 @@ vector<double> extract_grades(vector<course_tuple>& course_info)
   return all_grades;
 }
 
+// .. Filter a course list by given year
+vector<course_tuple> filter_course_info(vector<course_tuple>& course_info,
+                                        int year)
+{
+  vector<course_tuple> filtered_info;
+  // apply a filter that selects elements where the first digit of the 5
+  // digit course code is equal to the given year
+  // int course_code;
+  // vector<course_tuple>::iterator course_entry;
+  // for(course_entry=course_info.begin(); course_entry<course_info.end();
+  //     ++course_entry)
+  // {
+  //   course_code = std::get<1>(*course_entry);
+  //   if(course_code/10000 == year) filtered_info.push_back(*course_entry);
+  // }
+  copy_if(course_info.begin(), course_info.end(), std::back_inserter(filtered_info),
+          [year](course_tuple& info){return std::get<1>(info)/10000 == year;});
+  return filtered_info;
+}
+
+
 // .. Print out a (formatted) list of given courses
 int print_formatted_course_list(vector<course_tuple>& course_info)
 {
-  if (course_info.size()==0) return 0;
+  if(course_info.size()==0) return 0;
   else
   {
     std::ostringstream course_name_stream;
@@ -127,6 +150,29 @@ int print_formatted_course_list(vector<course_tuple>& course_info)
     std::cout<<"======================================="<<std::endl;
     return 1;
   }
+}
+
+// .. Get the user to choose which year(s) of courses they would like
+string get_valid_selection()
+{
+  string user_input;
+  bool valid{false};
+  std::cout<<"Which year of courses would you like? (choose a year 1-4 or 'all'): ";
+  // Prompt the user for input until a valid choice is given
+  do
+  {
+    getline(std::cin, user_input);
+    if(!(user_input == "1" || user_input == "2" || user_input == "3"
+         || user_input == "all"))
+    {
+      std::cout<<"Please enter one of the allowed choices (1, 2, 3, 4 or all): ";
+    }
+    else valid = true;
+  }while(!valid);
+
+  // Return the output
+  std::cout<<"You entered "<<user_input<<std::endl;
+  return user_input;
 }
 
 // .. Compute the mean of given scores
@@ -195,8 +241,21 @@ int main()
   // Close file
   //course_stream.close();
 
+  // Get the course selection, filtered either by year or 'all'
+  string year_selection = get_valid_selection();
+  vector<course_tuple> filtered_course_details;
+  if (year_selection=="all")
+  {
+    filtered_course_details = all_course_details;
+  }
+  else
+  {
+    filtered_course_details = filter_course_info(all_course_details,
+                                                 std::stoi(year_selection));
+  }
+
   // Print out list of all courses (correctly formatted)
-  print_formatted_course_list(all_course_details);
+  print_formatted_course_list(filtered_course_details);
 
   // Print number of courses requested
 
