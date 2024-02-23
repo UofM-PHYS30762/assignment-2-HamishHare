@@ -9,7 +9,8 @@
 #include<iostream>
 #include<iomanip>
 #include<fstream>
-#include<cmath>
+//#include<cmath>
+#include<math.h>
 
 #include<vector>
 #include<string>
@@ -20,7 +21,7 @@ using std::string; using std::vector;
 // Constants
 typedef std::tuple<double, int, string> course_tuple;
 
-// Helper functions
+// Functions
 // .. Read in all the lines from a file and return as a vector of strings
 vector<string> read_lines_from_file(string file_name)
 {
@@ -94,19 +95,37 @@ vector<double> extract_grades(vector<course_tuple>& course_info)
   return all_grades;
 }
 
-// .. Compute the mean and standard deviation of given scores.
-// TODO
+// .. Compute the mean of given scores.
 double compute_mean(vector<double>& grades)
 {
-  if(grades.size()==0)
-  {
-    return 0;
-  }
+  // TODO: Validation?
+  if(grades.size()==0) return 0;
   else
   {
     double sum = std::accumulate(grades.begin(), grades.end(), 0.0);
     double mean = sum / grades.size();
     return mean;
+  }
+}
+// .. Compute the standard deviation of given scores
+double compute_standard_deviation(vector<double>& grades)
+{
+  // TODO: Validation?
+  if(grades.size()==0) return 0;
+  else
+  {
+    double mean = compute_mean(grades);
+    // Compute the required sum of difference from the mean squared
+    double summed_difference_squared{0};
+    for(vector<double>::iterator grade=grades.begin();
+        grade<grades.end(); ++grade)
+    {
+      summed_difference_squared += std::pow(*grade - mean, 2);
+    }
+    // Calculate the standard deviation
+    double sqrt_term = (1.0/(grades.size()-1.0)) * summed_difference_squared;
+    double standard_deviation = std::pow(sqrt_term, 0.5);
+    return standard_deviation;
   }
 }
 
@@ -140,12 +159,11 @@ int main()
   // Compute mean, standard deviation and standard error of mean
   // TEST: Extract all grades and find mean
   vector<double> all_grades = extract_grades(all_course_details);
-  //double mean{compute_mean(all_grades)};
+  // double mean{compute_mean(all_grades)};
   vector<double> test{1.0, 2.0, 3.0, 4.0};
-  double mean{compute_mean(test)};
+  double standard_deviation{compute_standard_deviation(test)};
 
   // Free memory
-
 
   return 0;
 }
