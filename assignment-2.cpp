@@ -14,7 +14,7 @@
 #include<vector>
 #include<string>
 using std::string; using std::vector;
-#include<cstring> // TEMP
+#include<numeric>
 //#include<sstream>
 
 // Constants
@@ -96,10 +96,19 @@ vector<double> extract_grades(vector<course_tuple>& course_info)
 
 // .. Compute the mean and standard deviation of given scores.
 // TODO
-// double compute_mean()
-// {
-  
-// }
+double compute_mean(vector<double>& grades)
+{
+  if(grades.size()==0)
+  {
+    return 0;
+  }
+  else
+  {
+    double sum = std::accumulate(grades.begin(), grades.end(), 0.0);
+    double mean = sum / grades.size();
+    return mean;
+  }
+}
 
 // Main function
 int main()
@@ -126,12 +135,14 @@ int main()
 
   // Print out list of all courses (correctly formatted)
 
-  // TEST: Extract all grades
-  vector<double> all_grades = extract_grades(all_course_details);
-
   // Print number of courses requested
 
-  // Compute mean, standard deviation and  standard error of mean
+  // Compute mean, standard deviation and standard error of mean
+  // TEST: Extract all grades and find mean
+  vector<double> all_grades = extract_grades(all_course_details);
+  //double mean{compute_mean(all_grades)};
+  vector<double> test{1.0, 2.0, 3.0, 4.0};
+  double mean{compute_mean(test)};
 
   // Free memory
 
