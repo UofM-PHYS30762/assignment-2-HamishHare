@@ -45,21 +45,21 @@ std::vector<string> read_lines_from_file(string file_name)
 int main()
 {
   // Define variables
-  //char data_file[100];
-  // int number_courses;
+  string data_file_name;
+  //string data_file_name{"courselist.dat"};
+  size_t num_courses;
 
   // Ask user to enter filename
-  // TODO
-  const string data_file_name{"courselist.dat"};
-  //std::cout<<"Enter data filename: ";
-  //std::cin>>data_file;
+  std::cout<<"Enter data filename: ";
+  // TODO: Validation
+  std::getline(std::cin, data_file_name);
 
   // Open file (you must check if successful)
-  //std::fstream course_stream(data_file);
   //std::ifstream course_stream(data_file);
 
   // Read in all the lines from the file
   std::vector<string> all_file_lines = read_lines_from_file(data_file_name);
+  num_courses = all_file_lines.size();
 
   // Allocate memory for data 
 
