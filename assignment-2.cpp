@@ -45,15 +45,28 @@ std::vector<string> read_lines_from_file(string file_name)
 }
 
 // Split each course entry into component parts
-course_tuple get_course_info(string line_entry)
+std::vector<course_tuple> get_course_info(std::vector<string> &all_lines)
 {
-  // TODO:
-  // - Validation
-  // - Improve flexibility, rather than hardcoded splitting
-  double grade{std::stod(line_entry.substr(0, 4))};
-  int course_code{std::stoi(line_entry.substr(5, 5))};
-  string course_title{line_entry.substr(13)};
-  return std::make_tuple(grade, course_code, course_title);
+  std::vector<course_tuple> all_courses_info;
+  // Iterate over all the lines in the file and add a course detail
+  // tuple to the all_courses_info vector:
+  double grade;
+  int course_code;
+  string course_title;
+  std::vector<string>::iterator line_entry;
+  for(line_entry=all_lines.begin(); line_entry<all_lines.end(); ++line_entry)
+  {
+    // TODO:
+    // - Validation
+    // - Improve flexibility, rather than hardcoded splitting
+    grade = std::stod((*line_entry).substr(0, 4));
+    course_code = std::stoi((*line_entry).substr(5, 5));
+    course_title =(*line_entry).substr(13);
+
+    all_courses_info.push_back(std::make_tuple(grade, course_code, course_title));
+  }
+  
+  return all_courses_info;
 }
 
 // .. Compute the mean and standard deviation of given scores.
@@ -77,8 +90,7 @@ int main()
   size_t num_courses{all_file_lines.size()};
 
   // Split each line into grade, course code, and course title
-  course_tuple course_details = get_course_info(all_file_lines[0]);
-  //std::vector<course_tuple> course_details = 
+  std::vector<course_tuple> course_details = get_course_info(all_file_lines);
 
   // Close file
   //course_stream.close();
